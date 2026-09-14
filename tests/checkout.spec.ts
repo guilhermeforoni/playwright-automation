@@ -3,6 +3,8 @@ import { LoginPage } from '../pages/LoginPage';
 import { InventoryPage } from '../pages/InventoryPage';
 import { CheckoutPage } from '../pages/CheckoutPage';
 
+import userData from '../fixtures/users.json';
+
 test.describe('SauceDemo - Fluxo Completo de Checkout (Playwright + TS)', () => {
   // Declara as variáveis que guardarão a instância de cada página
   let loginPage: LoginPage;
@@ -18,7 +20,7 @@ test.describe('SauceDemo - Fluxo Completo de Checkout (Playwright + TS)', () => 
 
     // 2. Realiza o pré-requisito: Acessa o site e efetua o login
     await loginPage.navigate();
-    await loginPage.login('standard_user', 'secret_sauce');
+    await loginPage.login(userData.validUser.username, userData.validUser.password);
   });
 
   // CENÁRIO 1: Fluxo de Sucesso (Happy Path)
@@ -29,7 +31,13 @@ test.describe('SauceDemo - Fluxo Completo de Checkout (Playwright + TS)', () => 
 
     // Passo B: Inicia o checkout e preenche os dados do comprador
     await checkoutPage.clickCheckout();
-    await checkoutPage.fillForm('Guilherme', 'Foroni', '38000-000');
+    
+    await checkoutPage.fillForm(
+      userData.checkoutData.firstName,
+      userData.checkoutData.lastName,
+      userData.checkoutData.postalCode
+    );
+
     await checkoutPage.clickContinue();
 
     // Passo C: Valida os dados no resumo e confirma a compra

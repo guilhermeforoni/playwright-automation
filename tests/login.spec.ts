@@ -6,6 +6,9 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage';
 
+// Importa a massa de dados do JSON
+import userData from '../fixtures/users.json';
+
 
 // O test.describe funciona exatamente como o describe do Cypress: agrupa testes relacionados a uma mesma funcionalidade.
 // A linha let loginPage: LoginPage; declara uma variável tipada em TypeScript. Ela armazenará a instância da página de login para que todos os testes dentro desse bloco possam acessá-la.
@@ -25,7 +28,7 @@ test.describe('SauceDemo - Suíte de Login (Playwright + TS)', () => {
   // async ({ page }): Recebemos o objeto page para usá-lo na validação final de URL.
   // await loginPage.login(...): Executa a sequência de preencher usuário, senha e clicar no botão de login.
   test('Deve realizar login com sucesso usando usuário padrão', async ({ page }) => {
-    await loginPage.login('standard_user', 'secret_sauce');
+    await loginPage.login(userData.validUser.username, userData.validUser.password);
 
     // await expect(page).toHaveURL(/.*inventory.html/)
     //  - É a validação final (assertion). Verificamos se a URL do navegador mudou para a tela do catálogo (inventory.html).
@@ -34,11 +37,11 @@ test.describe('SauceDemo - Suíte de Login (Playwright + TS)', () => {
 
   // Neste teste não precisamos passar o { page } como argumento, porque usamos apenas os métodos do próprio loginPage
   test('Deve exibir mensagem de erro para usuário bloqueado', async () => {
-    await loginPage.login('locked_out_user', 'secret_sauce');
+    await loginPage.login(userData.lockedUser.username, userData.lockedUser.password);
     
     // await loginPage.validateErrorMessage(...) 
     //  - Chama o método criado na LoginPage.ts que valida se o alerta vermelho de erro apareceu e se contém o texto correto.
-    await loginPage.validateErrorMessage('Sorry, this user has been locked out.');
+    await loginPage.validateErrorMessage(userData.lockedUser.errorMessage);
   });
 });
 
